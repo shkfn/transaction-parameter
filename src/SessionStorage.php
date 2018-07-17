@@ -2,6 +2,7 @@
 namespace Shkfn\TransactionParameter;
 
 use Illuminate\Contracts\Session\Session;
+use Shkfn\TransactionParameter\Contracts\Storage;
 /**
  *
  */

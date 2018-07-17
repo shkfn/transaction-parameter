@@ -1,5 +1,5 @@
 <?php
-namespace Shkfn\TransactionParameter;
+namespace Shkfn\TransactionParameter\Contracts;
 /**
  *
  */

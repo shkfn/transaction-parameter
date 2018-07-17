@@ -2,6 +2,7 @@
 namespace Shkfn\TransactionParameter;
 
 use Shkfn\TransactionParameter\Contracts\Transaction as TransactionInterface;
+use Shkfn\TransactionParameter\Contracts\Storage;
 /**
  *
  */

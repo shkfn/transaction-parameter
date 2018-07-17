@@ -2,6 +2,7 @@
 namespace Shkfn\TransactionParameter;
 
 use Illuminate\Support\ServiceProvider;
+use Shkfn\TransactionParameter\Contracts\Storage;
 
 class TransactionServiceProvider extends ServiceProvider
 {
