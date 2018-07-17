@@ -19,7 +19,7 @@
 ```json
 "repositories": [
     {
-        "type": "git",
+        "type": "vcs",
         "url": "https://github.com/shkfn/transaction-parameter"
     }
 ]
