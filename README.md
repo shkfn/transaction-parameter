@@ -87,6 +87,9 @@ use Shkfn\TransactionParameter\Transaction;
 
 class TransactionController extend Controller
 {
+    /** @var Transaction */
+    protected $transaction;
+    
     public function __construct(Transaction $transaction)
     {
         $this->transaction = $transaction;
@@ -96,7 +99,7 @@ class TransactionController extend Controller
      * 入力画面表示
      * @param string $token
      */
-    public functin input($token = null)
+    public function input($token = null)
     {
         $param = null;
         if (is_null($token)) {
