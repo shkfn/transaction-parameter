@@ -3,7 +3,7 @@ namespace Shkfn\TransactionParameter;
 
 use Illuminate\Support\ServiceProvider;
 
-class TransactionParameterServiceProvider extends ServiceProvider
+class TransactionServiceProvider extends ServiceProvider
 {
 
     /**
