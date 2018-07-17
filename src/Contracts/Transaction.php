@@ -1,9 +1,9 @@
 <?php
-namespace Shkfn\TransactionParameter;
+namespace Shkfn\TransactionParameter\Contracts;
 /**
  *
  */
-interface TransactionInterface
+interface Transaction
 {
     public function start($key = null);
     public function open($key = null);

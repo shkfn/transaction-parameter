@@ -1,5 +1,7 @@
 <?php
 namespace Shkfn\TransactionParameter;
+
+use Shkfn\TransactionParameter\Contracts\Transaction as TransactionInterface;
 /**
  *
  */
