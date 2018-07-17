@@ -17,12 +17,14 @@
 プロジェクトの composer.json にライブラリのリポジトリを追加します。現状はPackagistに載せていませんので、直接githubのリポジトリを指定します。
 
 ```json
-"repositories": [
-    {
-        "type": "vcs",
-        "url": "https://github.com/shkfn/transaction-parameter"
-    }
-]
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/shkfn/transaction-parameter"
+        }
+    ]
+}
 ```
 
 composerを使ってインストール。
@@ -84,6 +86,7 @@ Route::post('input/register/{token}', [
 namespace App\Http\Controllers;
 
 use Shkfn\TransactionParameter\Transaction;
+use App\Http\Requests\InputRequest;
 
 class TransactionController extend Controller
 {
@@ -101,7 +104,7 @@ class TransactionController extend Controller
      */
     public function input($token = null)
     {
-        $param = null;
+        $params = null;
         if (is_null($token)) {
             $token = $this->transaction->start(); // tokenがnullか引数無しの場合に新しいtokenを発行して返却
         } else {
@@ -112,21 +115,21 @@ class TransactionController extend Controller
                 return abort(404);
             }
         }
-        return view('input', ['token' => $token,'params' => $params]) // tokenはルートパラメータとして使用
+        return view('input', ['token' => $token,'params' => $params]); // tokenはルートパラメータとして使用
     }
 
     /**
      * 入力バリデーション
-     * @param Request $request
+     * @param InputRequest $request
      * @param string $token
      */
-    public function validateInput(Request $request, $token)
+    public function validateInput(InputRequest $request, $token)
     {
         // token毎に区切られた領域に保存
         if ($this->transaction->start($token)) {
             $params = $request->validated();
             $this->transaction->put($params); // バリデーション済みの値を保存。第2引数に文字列でタグを設定可能。タグを設定して保存した場合は、get時にもタグの指定が必要。
-            return redirect('confirm');
+            return redirect(route('confirm', ['token' => $token]));
         }
         return back();
     }
@@ -139,9 +142,9 @@ class TransactionController extend Controller
     {
         if ($this->transaction->start($token)) { // tokenを使ってトランザクションを再開
             $params = $this->transaction->get();
-            return view('confirm', ['params' => $params]);
+            return view('confirm', ['token' => $token, 'params' => $params]);
         }
-        return redirect('input'); // 入力画面やエラー画面等へリダイレクト
+        return redirect(route('input')); // 入力画面やエラー画面等へリダイレクト
     }
 
     /**
@@ -152,11 +155,11 @@ class TransactionController extend Controller
     {
         if ($this->transaction->start($token)) { // tokenを使ってトランザクションを再開
             $params = $this->transaction->get();
-            Post::create($data); // DB登録
+            Post::create($params); // DB登録
             $this->transaction->close(); // tokenの保存領域を明示的にクリアするメソッド
             return redirect('complete');
         }
-        return redirect('input'); // 入力画面やエラー画面等へリダイレクト
+        return redirect(route('input')); // 入力画面やエラー画面等へリダイレクト
     }
 }
 ```
