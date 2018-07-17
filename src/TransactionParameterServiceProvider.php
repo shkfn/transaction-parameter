@@ -20,11 +20,11 @@ class TransactionParameterServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $configPath = __DIR__ . '/../config/transaction-storage.php';
+        $configPath = __DIR__ . '/../config/transaction-parameter.php';
         if (function_exists('config_path')) {
-            $publishPath = config_path('transaction-storage.php');
+            $publishPath = config_path('transaction-parameter.php');
         } else {
-            $publishPath = base_path('config/transaction-storage.php');
+            $publishPath = 'config/transaction-parameter.php';
         }
         $this->publishes([$configPath => $publishPath], 'config');
     }
@@ -36,8 +36,8 @@ class TransactionParameterServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $configPath = __DIR__ . '/../config/transaction-storage.php';
-        $this->mergeConfigFrom($configPath, 'transaction-storage');
+        $configPath = __DIR__ . '/../config/transaction-parameter.php';
+        $this->mergeConfigFrom($configPath, 'transaction-parameter');
 
         // ストレージ領域制御クラスのバインド
         $this->app->singleton(
@@ -45,9 +45,9 @@ class TransactionParameterServiceProvider extends ServiceProvider
             function($app) {
                 return new SessionStorageEngine(
                     $app['session.store'],
-                    $app['config']->get('transaction-storage.namespace'),
-                    $app['config']->get('transaction-storage.key_length'),
-                    $app['config']->get('transaction-storage.store_max')
+                    $app['config']->get('transaction-parameter.namespace'),
+                    $app['config']->get('transaction-parameter.key_length'),
+                    $app['config']->get('transaction-parameter.store_max')
                 );
             }
         );
