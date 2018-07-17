@@ -41,9 +41,9 @@ class TransactionServiceProvider extends ServiceProvider
 
         // ストレージ領域制御クラスのバインド
         $this->app->singleton(
-            SessionStorageEngine::class,
+            SessionStorage::class,
             function($app) {
-                return new SessionStorageEngine(
+                return new SessionStorage(
                     $app['session.store'],
                     $app['config']->get('transaction-parameter.namespace'),
                     $app['config']->get('transaction-parameter.token_length'),
@@ -54,7 +54,7 @@ class TransactionServiceProvider extends ServiceProvider
         // ストレージ領域制御インターフェースのバインド
         $this->app->bind(
             StorageEngine::class,
-            SessionStorageEngine::class
+            SessionStorage::class
         );
         // トランザクション管理クラスのバインド
         $this->app->singleton(

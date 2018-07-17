@@ -5,7 +5,7 @@ use Illuminate\Contracts\Session\Session;
 /**
  *
  */
-class SessionStorageEngine implements StorageEngine
+class SessionStorage implements StorageEngine
 {
     /** @var string */
     protected $namespace;
