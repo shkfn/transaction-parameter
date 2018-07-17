@@ -5,11 +5,11 @@ namespace Shkfn\TransactionParameter;
  */
 class Transaction implements TransactionInterface
 {
-    /** @var StorageEngine  */
+    /** @var Storage  */
     protected $storage;
 
 
-    public function __construct(StorageEngine $storage)
+    public function __construct(Storage $storage)
     {
         $this->storage = $storage;
     }
@@ -75,7 +75,7 @@ class Transaction implements TransactionInterface
      * @param  null|string $tag タグ
      * @return void
      */
-    public function put($param, $tag = StorageEngine::DEFAULT_TAG)
+    public function put($param, $tag = Storage::DEFAULT_TAG)
     {
         return $this->storage->put($param, $tag);
     }
@@ -86,7 +86,7 @@ class Transaction implements TransactionInterface
      * @param null|string $tag タグ
      * @return void
      */
-    public function push($param, $tag = StorageEngine::DEFAULT_TAG)
+    public function push($param, $tag = Storage::DEFAULT_TAG)
     {
         return $this->storage->push($param, $tag);
     }
@@ -96,7 +96,7 @@ class Transaction implements TransactionInterface
      * @param  null|string $tag タグ
      * @return array
      */
-    public function get($tag = StorageEngine::DEFAULT_TAG)
+    public function get($tag = Storage::DEFAULT_TAG)
     {
         return $this->storage->get($tag);
     }
@@ -106,7 +106,7 @@ class Transaction implements TransactionInterface
      * @param  null|string $tag タグ
      * @return array
      */
-    public function pull($tag = StorageEngine::DEFAULT_TAG)
+    public function pull($tag = Storage::DEFAULT_TAG)
     {
         return $this->storage->pull($tag);
     }

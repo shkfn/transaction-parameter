@@ -3,7 +3,7 @@ namespace Shkfn\TransactionParameter;
 /**
  *
  */
-interface StorageEngine
+interface Storage
 {
     const DEFAULT_TAG = '_default';
 

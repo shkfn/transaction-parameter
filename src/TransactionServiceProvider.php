@@ -53,14 +53,14 @@ class TransactionServiceProvider extends ServiceProvider
         );
         // ストレージ領域制御インターフェースのバインド
         $this->app->bind(
-            StorageEngine::class,
+            Storage::class,
             SessionStorage::class
         );
         // トランザクション管理クラスのバインド
         $this->app->singleton(
             Transaction::class,
             function ($app) {
-                return new Transaction($app[StorageEngine::class]);
+                return new Transaction($app[Storage::class]);
             }
         );
 
