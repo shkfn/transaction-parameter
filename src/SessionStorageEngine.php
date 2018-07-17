@@ -10,9 +10,9 @@ class SessionStorageEngine implements StorageEngine
     /** @var string */
     protected $namespace;
     /** @var  int */
-    protected $key_length;
+    protected $token_length;
     /** @var  int */
-    protected $store_max;
+    protected $limit_of_tokens;
     /** @var  string */
     protected $key;
     /**
@@ -29,25 +29,25 @@ class SessionStorageEngine implements StorageEngine
      * @param  \Illuminate\Contracts\Session\Session  $session
      * @return void
      */
-    public function __construct(Session $session, $namespace, $key_length, $store_max)
+    public function __construct(Session $session, $namespace, $token_length, $limit_of_tokens)
     {
         $this->session = $session;
         $this->namespace = $namespace;
-        $this->key_length = $key_length;
-        $this->store_max = $store_max;
+        $this->token_length = $token_length;
+        $this->limit_of_tokens = $limit_of_tokens;
     }
 
     public function open()
     {
         // キー無しはストア領域確保して開始準備
         $store = $this->session->get($this->namespace,[]);
-        $this->key = str_random($this->key_length);
+        $this->key = str_random($this->token_length);
         $storage = [self::DEFAULT_TAG => null];
         $store += [
             $this->key => $storage
         ];
-        if ( count($store) >= $this->store_max) {
-            $store = array_slice($store, 1, $this->store_max); // 上限以上は古い方から破棄
+        if ( count($store) >= $this->limit_of_tokens) {
+            $store = array_slice($store, 1, $this->limit_of_tokens); // 上限以上は古い方から破棄
         }
         $this->session->put($this->namespace, $store);
         return $this->key;

@@ -46,8 +46,8 @@ class TransactionServiceProvider extends ServiceProvider
                 return new SessionStorageEngine(
                     $app['session.store'],
                     $app['config']->get('transaction-parameter.namespace'),
-                    $app['config']->get('transaction-parameter.key_length'),
-                    $app['config']->get('transaction-parameter.store_max')
+                    $app['config']->get('transaction-parameter.token_length'),
+                    $app['config']->get('transaction-parameter.limit_of_tokens')
                 );
             }
         );
