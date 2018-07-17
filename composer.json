@@ -18,5 +18,7 @@
         "psr-4": {
             "Shkfn\\TransactionParameter\\": "src/"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
