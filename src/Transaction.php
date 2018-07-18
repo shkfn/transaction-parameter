@@ -20,38 +20,38 @@ class Transaction implements TransactionInterface
     /**
      * トランザクションキーを発行し、セッションにストア領域を確保。キー返却。
      * 引数ありの場合はload()を実行。
-     * @param string|null $key
+     * @param string|null $token
      * @return string|bool トランザクションキー|キーがなければloadの判定結果
      */
-    public function start($key = null)
+    public function start($token = null)
     {
 
-        if (is_null($key)) {
+        if (is_null($token)) {
             return $this->storage->open();
         }
 
-        return $this->load($key);
+        return $this->load($token);
 
     }
 
     /**
      * startのエイリアス
-     * @param string|null $key
+     * @param string|null $token
      * @return string|bool
      */
-    public function open($key = null)
+    public function open($token = null)
     {
-        return call_user_func_array([$this, 'start'], func_get_args());
+        return $this->start($token);
     }
 
     /**
      * キーストアにトランザクションキーが存在しているか判定。
-     * @param  string $key トランザクションキー
+     * @param  string $token トランザクションキー
      * @return bool                 キーの存在確認結果
      */
-    public function load($key)
+    public function load($token)
     {
-        return $this->storage->load($key);
+        return $this->storage->load($token);
     }
 
     /**
@@ -60,7 +60,7 @@ class Transaction implements TransactionInterface
      */
     public function stop()
     {
-        call_user_func([$this, 'close']);
+        $this->storage->close();
     }
 
     /**
@@ -69,7 +69,7 @@ class Transaction implements TransactionInterface
      */
     public function close()
     {
-        $this->storage->close();
+        $this->stop();
     }
 
     /**
@@ -78,9 +78,9 @@ class Transaction implements TransactionInterface
      * @param  null|string $tag タグ
      * @return void
      */
-    public function put($param, $tag = Storage::DEFAULT_TAG)
+    public function put($param, $tag = null)
     {
-        return $this->storage->put($param, $tag);
+        $this->storage->put($param, $tag);
     }
 
     /**
@@ -89,9 +89,9 @@ class Transaction implements TransactionInterface
      * @param null|string $tag タグ
      * @return void
      */
-    public function push($param, $tag = Storage::DEFAULT_TAG)
+    public function push($param, $tag = null)
     {
-        return $this->storage->push($param, $tag);
+        $this->storage->push($param, $tag);
     }
 
     /**
@@ -99,7 +99,7 @@ class Transaction implements TransactionInterface
      * @param  null|string $tag タグ
      * @return array
      */
-    public function get($tag = Storage::DEFAULT_TAG)
+    public function get($tag = null)
     {
         return $this->storage->get($tag);
     }
@@ -109,7 +109,7 @@ class Transaction implements TransactionInterface
      * @param  null|string $tag タグ
      * @return array
      */
-    public function pull($tag = Storage::DEFAULT_TAG)
+    public function pull($tag = null)
     {
         return $this->storage->pull($tag);
     }

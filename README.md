@@ -182,11 +182,11 @@ class TransactionController extend Controller
 
 ### メソッド
 
-- start(string $token = null) : string
+- start(string $token = null) : string|bool
 
 トランザクションを開始（再開）する。トークンを発行し、セッションに保存領域を確保。発行したトークンを返却。null以外の引数を設定した場合は load()を実行します。
 
-- open(string $token = null) : string
+- open(string $token = null) : string|bool
 
 start()のエイリアス。
 
