@@ -157,7 +157,7 @@ class TransactionController extend Controller
             $params = $this->transaction->get();
             Post::create($params); // DB登録
             $this->transaction->close(); // tokenの保存領域を明示的にクリアするメソッド
-            return redirect('complete');
+            return redirect(route('complete')); // 完了メッセージを表示する画面等へリダイレクト
         }
         return redirect(route('input')); // 入力画面やエラー画面等へリダイレクト
     }
