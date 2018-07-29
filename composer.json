@@ -15,13 +15,14 @@
         "illuminate/support": ">=5.5.0"
     },
     "require-dev": {
-        "orchestra/testbench": "3.6.*"
+        "orchestra/testbench": "3.6.*",
+        "phpunit/phpunit": "^7.2"
     },
     "autoload": {
         "psr-4": {
             "Shkfn\\TransactionParameter\\": "src/"
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
