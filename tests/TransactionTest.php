@@ -51,13 +51,13 @@ class TransactionTest extends Orchestra\Testbench\TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->session(self::$session);
+//        $this->session(self::$session);
         $this->transaction = $this->app->make(Transaction::class);
     }
 
     public function tearDown()
     {
-        self::$session = app('session')->all();
+//        self::$session = app('session')->all();
         parent::tearDown();
     }
 
@@ -68,39 +68,95 @@ class TransactionTest extends Orchestra\Testbench\TestCase
 
     public function testStart()
     {
-        $token = $this->transaction->start();
+        $this->commonTestStartOpen('start');
+    }
+
+    public function testOpen()
+    {
+        $this->commonTestStartOpen('open');
+    }
+
+    protected function commonTestStartOpen($method)
+    {
+        $token = $this->transaction->{$method}();
         $this->assertInternalType('string', $token);
         $this->assertRegExp('/[a-zA-Z0-9]{'.$this->option['token_length'].'}/', $token);
-        $this->assertTrue($this->transaction->start($token));
-        $this->assertFalse($this->transaction->start('dummy'));
+        $this->assertTrue($this->transaction->{$method}($token));
+        $this->assertFalse($this->transaction->{$method}('dummy'));
         $session = app('session')->all();
         $this->assertArrayHasKey($this->option['namespace'], $session);
         $this->assertArraySubset(
-            [$token => ['__default' => null]],
+            [$token => ['_default' => null]],
             $session[$this->option['namespace']]
         );
     }
 
-//    public function testOpen()
+    public function testLoad()
+    {
+        $token = $this->transaction->start();
+        $this->assertTrue($this->transaction->load($token), 'load with token invalid');
+        $this->assertTrue($this->transaction->load('dummy'), 'load with wrong token invalid');
+    }
+
+    public function testPut()
+    {
+        $this->transaction->start();
+        $this->transaction->put([
+            'param1' => 1,
+            'param2' => 2,
+        ]);
+        $this->assertArraySubset(
+            [
+                'param1' => 1,
+                'param2' => 2,
+            ],
+            $this->transaction->get(),
+            true,
+            'put invalid'
+        );
+
+        $this->transaction->put([
+            'param3' => 3,
+            'param4' => 4,
+        ], 'tag1');
+        $this->transaction->put([
+            'param5' => 5,
+            'param6' => 6,
+        ], 'tag2');
+        $this->assertArraySubset(
+            [
+                'param3' => 3,
+                'param4' => 4,
+            ],
+            $this->transaction->get('tag1'),
+            true,
+            'put tag1 invalid'
+        );
+        $this->assertArraySubset(
+            [
+                'param5' => 5,
+                'param6' => 6,
+            ],
+            $this->transaction->get('tag2'),
+            true,
+            'put tag2 invalid'
+        );
+        $this->assertArraySubset(
+            [
+                'param1' => 1,
+                'param2' => 2,
+            ],
+            $this->transaction->get(),
+            true,
+            'put reuse invalid'
+        );
+    }
+
+//    public function testPull()
 //    {
-//        $token = $this->transaction->open();
-//        $this->assertInternalType('string', $token);
-//        $this->assertRegExp('/[a-zA-Z0-9]{'.$this->option['token_length'].'}/', $token);
-//        $this->assertTrue($this->transaction->open($token));
-//        $this->assertFalse($this->transaction->open('dummy'));
+//
 //    }
 
-//
-//    public function testPut()
-//    {
-//
-//    }
-//
-//    public function testLoad()
-//    {
-//
-//    }
-//
 //    public function testGet()
 //    {
 //
@@ -111,10 +167,6 @@ class TransactionTest extends Orchestra\Testbench\TestCase
 //
 //    }
 //
-//    public function testPull()
-//    {
-//
-//    }
 //
 //
 //
@@ -127,5 +179,6 @@ class TransactionTest extends Orchestra\Testbench\TestCase
 //    public function testPush()
 //    {
 //
+//    }
 //    }
 }
