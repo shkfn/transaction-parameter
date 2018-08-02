@@ -95,7 +95,7 @@ class TransactionTest extends Orchestra\Testbench\TestCase
     {
         $token = $this->transaction->start();
         $this->assertTrue($this->transaction->load($token), 'load with token invalid');
-        $this->assertTrue($this->transaction->load('dummy'), 'load with wrong token invalid');
+        $this->assertFalse($this->transaction->load('dummy'), 'load with wrong token invalid');
     }
 
     public function testPut()
@@ -165,16 +165,128 @@ class TransactionTest extends Orchestra\Testbench\TestCase
         );
     }
 
-//    public function testPull()
-//    {
-//        $this->transaction->start();
-//        $this->transaction->put([
-//            'param1' => 1,
-//            'param2' => 2,
-//            'param3' => 3,
-//        ]);
-//    }
+    public function testPull()
+    {
+        $this->transaction->start();
+        $this->transaction->put([
+            'param1' => 1,
+            'param2' => 2,
+        ]);
+        $this->transaction->put([
+            'param3' => 3,
+            'param4' => 4,
+        ], 'tag1');
+        $this->assertArraySubset(
+            [
+                'param1' => 1,
+                'param2' => 2,
+            ],
+            $this->transaction->pull(),
+            true,
+            'pull no tag invalid'
+        );
+        $this->assertArraySubset(
+            [],
+            $this->transaction->get(),
+            true,
+            'pull後に値が消えていない'
+        );
+        $this->assertArraySubset(
+            [
+                'param3' => 3,
+                'param4' => 4,
+            ],
+            $this->transaction->pull('tag1'),
+            true,
+            'pull tag1 invalid'
+        );
+        $this->assertArraySubset(
+            [],
+            $this->transaction->get('tag1'),
+            true,
+            'タグ指定pull後に値が消えていない'
+        );
+    }
 
+    public function testPush()
+    {
+        $this->transaction->start();
+        $this->transaction->push([
+            'param1' => 1,
+            'param2' => 2,
+        ]);
+        $this->transaction->push([
+            'param3' => 3,
+            'param4' => 4,
+        ]);
+        $this->assertArraySubset(
+            [
+                'param1' => 1,
+                'param2' => 2,
+                'param3' => 3,
+                'param4' => 4,
+            ],
+            $this->transaction->get(),
+            true,
+            'push no tag invalid'
+        );
+
+        $this->transaction->push([
+            'param1' => 'merge1',
+            'param3' => 'merge3',
+            'param5' => 5,
+        ]);
+        $this->assertArraySubset(
+            [
+                'param1' => 'merge1',
+                'param2' => 2,
+                'param3' => 'merge3',
+                'param4' => 4,
+                'param5' => 5,
+            ],
+            $this->transaction->get(),
+            true,
+            'push merge no tag invalid'
+        );
+
+        $this->transaction->push([
+            'param1' => 1,
+            'param2' => 2,
+        ], 'tag1');
+        $this->transaction->push([
+            'param3' => 3,
+            'param4' => 4,
+        ], 'tag1');
+        $this->assertArraySubset(
+            [
+                'param1' => 1,
+                'param2' => 2,
+                'param3' => 3,
+                'param4' => 4,
+            ],
+            $this->transaction->get('tag1'),
+            true,
+            'push tag1 invalid'
+        );
+
+        $this->transaction->push([
+            'param1' => 'merge1',
+            'param3' => 'merge3',
+            'param5' => 5,
+        ], 'tag1');
+        $this->assertArraySubset(
+            [
+                'param1' => 'merge1',
+                'param2' => 2,
+                'param3' => 'merge3',
+                'param4' => 4,
+                'param5' => 5,
+            ],
+            $this->transaction->get('tag1'),
+            true,
+            'push merge tag1 invalid'
+        );
+    }
 //    public function testGet()
 //    {
 //
@@ -194,9 +306,4 @@ class TransactionTest extends Orchestra\Testbench\TestCase
 //
 //    }
 //
-//    public function testPush()
-//    {
-//
-//    }
-//    }
 }
