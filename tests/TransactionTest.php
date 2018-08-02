@@ -112,9 +112,9 @@ class TransactionTest extends Orchestra\Testbench\TestCase
             ],
             $this->transaction->get(),
             true,
-            'put invalid'
+            'put no tag invalid'
         );
-
+        // タグ付き
         $this->transaction->put([
             'param3' => 3,
             'param4' => 4,
@@ -148,13 +148,31 @@ class TransactionTest extends Orchestra\Testbench\TestCase
             ],
             $this->transaction->get(),
             true,
-            'put reuse invalid'
+            'タグ付きput後にタグ指定無しの値が不正になった'
+        );
+        $this->transaction->put([
+            'param100' => 100,
+            'param200' => 200,
+        ]);
+        $this->assertArraySubset(
+            [
+                'param100' => 100,
+                'param200' => 200,
+            ],
+            $this->transaction->get(),
+            true,
+            'パラメータが上書きになっていない'
         );
     }
 
 //    public function testPull()
 //    {
-//
+//        $this->transaction->start();
+//        $this->transaction->put([
+//            'param1' => 1,
+//            'param2' => 2,
+//            'param3' => 3,
+//        ]);
 //    }
 
 //    public function testGet()
