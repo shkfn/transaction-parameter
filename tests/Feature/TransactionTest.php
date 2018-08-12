@@ -51,20 +51,9 @@ class TransactionTest extends Orchestra\Testbench\TestCase
     public function setUp()
     {
         parent::setUp();
-//        $this->session(self::$session);
+
         $this->transaction = $this->app->make(Transaction::class);
     }
-
-    public function tearDown()
-    {
-//        self::$session = app('session')->all();
-        parent::tearDown();
-    }
-
-//    public function test__construct()
-//    {
-//
-//    }
 
     public function testStart()
     {
@@ -287,23 +276,31 @@ class TransactionTest extends Orchestra\Testbench\TestCase
             'push merge tag1 invalid'
         );
     }
-//    public function testGet()
-//    {
-//
-//    }
-//
-//    public function testStop()
-//    {
-//
-//    }
-//
-//
-//
-//
-//
-//    public function testClose()
-//    {
-//
-//    }
-//
+    public function testClose()
+    {
+        $token = $this->transaction->start();
+        $this->transaction->push([
+            'param1' => 1,
+            'param2' => 2,
+        ]);
+
+        $this->transaction->close();
+
+        $this->assertEquals([], $this->transaction->get(), '保存した値が削除されていない');
+        $this->assertFalse($this->transaction->load($token), 'トークンが削除されていない');
+    }
+
+    public function testStop()
+    {
+        $token = $this->transaction->start();
+        $this->transaction->push([
+            'param1' => 1,
+            'param2' => 2,
+        ]);
+
+        $this->transaction->stop();
+
+        $this->assertEquals([], $this->transaction->get(), '保存した値が削除されていない');
+        $this->assertFalse($this->transaction->load($token), 'トークンが削除されていない');
+    }
 }
